@@ -2,7 +2,7 @@
 
 int main()
 {
-   real x,y;
+   Real x,y;
    x=9; y=1;
    TNode2d n1,n2,n3,n4;
    n1.x=0; n1.y=0;

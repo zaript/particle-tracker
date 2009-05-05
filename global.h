@@ -1,21 +1,22 @@
-#define real double
-#define integer int
 #include <stdio.h>
 #include <math.h>
 
+typedef double Real;
+typedef int Integer;
+
 typedef struct {
-   real x,y;
+   Real x,y;
 } TNode2d;
 
 typedef struct{
-   integer type;
-   integer n1,n2,n3,n4;
+   Integer type;
+   Integer n1,n2,n3,n4;
 } TCell2d;
 
-integer NNodes, NCells;
+Integer NNodes, NCells;
 TNode2d * Nodes;
 TCell2d * Cells;
-integer NNeighbours;
-integer ** Neighbours;
-real * ux,uy,duxdx,duydx,duxdy,duydy;
-integer CurrentCell;
+Integer NNeighbours;
+Integer ** Neighbours;
+Real * ux,uy,duxdx,duydx,duxdy,duydy;
+Integer CurrentCell;

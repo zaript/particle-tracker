@@ -1,6 +1,6 @@
 #include "interpol.h"
 
-char InTriangle(real x,real y,TNode2d n1,TNode2d n2,TNode2d n3)
+char InTriangle(Real x,Real y,TNode2d n1,TNode2d n2,TNode2d n3)
 {
    if ( (n2.x-n1.x)*(y-n1.y)-(n2.y-n1.y)*(x-n1.x) < 0)
       return 0;
@@ -11,7 +11,7 @@ char InTriangle(real x,real y,TNode2d n1,TNode2d n2,TNode2d n3)
    return 1;
 }
 
-char InQuadrilateral(real x,real y,TNode2d n1,TNode2d n2, TNode2d n3, TNode2d n4)
+char InQuadrilateral(Real x,Real y,TNode2d n1,TNode2d n2, TNode2d n3, TNode2d n4)
 {
    if ( (n2.x-n1.x)*(y-n1.y)-(n2.y-n1.y)*(x-n1.x) < 0)
       return 0;
@@ -24,7 +24,7 @@ char InQuadrilateral(real x,real y,TNode2d n1,TNode2d n2, TNode2d n3, TNode2d n4
    return 1;
 }
 
-char InCell2d(real x,real y, TCell2d c)
+char InCell2d(Real x,Real y, TCell2d c)
 {
    switch (c.type)
    {
@@ -33,9 +33,9 @@ char InCell2d(real x,real y, TCell2d c)
    }
 }
 
-real InterpolateInTriangle(real x, real y, TNode2d n1, TNode2d n2, TNode2d n3, real f1, real f2, real f3)
+Real InterpolateInTriangle(Real x, Real y, TNode2d n1, TNode2d n2, TNode2d n3, Real f1, Real f2, Real f3)
 {
-   real a1,a2,a3,det;
+   Real a1,a2,a3,det;
    det=(n2.x-n1.x)*(n3.y-n1.y)-(n3.x-n1.x)*(n2.y-n1.y);
    a2=((f2-f1)*(n3.y-n1.y)-(f3-f1)*(n2.y-n1.y))/det;
    a3=((n2.x-n1.x)*(f3-f1)-(n3.x-n1.x)*(f2-f1))/det;
@@ -43,9 +43,9 @@ real InterpolateInTriangle(real x, real y, TNode2d n1, TNode2d n2, TNode2d n3, r
    return a1+a2*x+a3*y;
 }
 
-real SolveQE(real a,real b,real c)
+Real SolveQE(Real a,Real b,Real c)
 {
-   real x1,x2,d;
+   Real x1,x2,d;
    d=b*b-4.0*a*c;
    if (d>=0)
    {
@@ -56,11 +56,11 @@ real SolveQE(real a,real b,real c)
    }
 }
 
-real CartCoordToCurv(real x,real y, TNode2d n1, TNode2d n2, TNode2d n3, TNode2d n4)
+Real CartCoordToCurv(Real x,Real y, TNode2d n1, TNode2d n2, TNode2d n3, TNode2d n4)
 {
-   real ax,bx,cx,dx;
-   real ay,by,cy,dy;
-   real a,b,c;
+   Real ax,bx,cx,dx;
+   Real ay,by,cy,dy;
+   Real a,b,c;
    ax=(2.0*x-n1.x-n2.x)/2.0;
    bx=(n1.x-n2.x)/2.0;
    cx=(-n1.x-n2.x+n3.x+n4.x)/2.0;
@@ -78,10 +78,10 @@ real CartCoordToCurv(real x,real y, TNode2d n1, TNode2d n2, TNode2d n3, TNode2d 
       return -c/b;
 }
 
-real InterpolateInQuadrilateral(real x,real y, TNode2d n1, TNode2d n2, TNode2d n3, TNode2d n4, real f1, real f2, real f3, real f4)
+Real InterpolateInQuadrilateral(Real x,Real y, TNode2d n1, TNode2d n2, TNode2d n3, TNode2d n4, Real f1, Real f2, Real f3, Real f4)
 {
-   real a1,a2,a3,a4;
-   real u,v;
+   Real a1,a2,a3,a4;
+   Real u,v;
    u=CartCoordToCurv(x,y,n1,n2,n3,n4);
    v=CartCoordToCurv(x,y,n1,n4,n3,n2);
    a1=(1.0-u)*(1.0-v)/4.0;
@@ -91,7 +91,7 @@ real InterpolateInQuadrilateral(real x,real y, TNode2d n1, TNode2d n2, TNode2d n
    return a1*f1+a2*f2+a3*f3+a4*f4;
 }
 
-real Interpolate2d(real x,real y,TCell2d c,real * q)
+Real Interpolate2d(Real x,Real y,TCell2d c,Real * q)
 {
    switch (c.type)
    {
