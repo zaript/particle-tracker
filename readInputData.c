@@ -10,7 +10,6 @@
 
 int
 setMarker (char *bufstr) {
-
     int marker = 0;
     if (strstr(bufstr, "Grid points ") != NULL) {marker = 1;}     //points section
     if (strstr(bufstr, "Elements") != NULL) {marker = 2;}         //cells section
@@ -31,9 +30,12 @@ readNodeData (char *bufstr,
     int success = 0;
     /*char tempstr[100];*/
     char *tempstr;
-    Real z;
-    if (bufstr[0] = 'G') {
-        sscanf(bufstr, "%s %d %f %f %f", &tempstr, &i, &z, &nodes[i].x, &nodes[i].y);
+    int tempint;
+    Real tempz, tempx, tempy;
+    if (bufstr[0] == 'G') {
+        sscanf(bufstr, "%s %d %f %f %f", &tempstr, &tempint, &tempz, &tempx, &tempy); 
+        nodes[i].x = tempx;
+        nodes[i].y = tempy;
         success = 1;
     }
     return success;
@@ -48,11 +50,11 @@ readCellData (char *bufstr,
     char *tempstr;
     int tempint;
     if (strstr(bufstr, "CTRIA3")) {
-        sscanf(bufstr, "%s %d %d %d %d %d", &tempstr, &i, &tempint, &cells[i].n1, &cells[i].n2, cells[i].n3);
+        sscanf(bufstr, "%s %d %d %d %d %d", &tempstr, &tempint, &tempint, &cells[i].n1, &cells[i].n2, &cells[i].n3);
         cells[i].type = 1;
     }
     if (strstr(bufstr, "CQUAD4")) {
-        sscanf(bufstr, "%s %d %d %d %d %d", &tempstr, &i, &tempint, &cells[i].n1, &cells[i].n2, cells[i].n3, cells[i].n4);
+        sscanf(bufstr, "%s %d %d %d %d %d", &tempstr, &tempint, &tempint, &cells[i].n1, &cells[i].n2, &cells[i].n3, &cells[i].n4);
         cells[i].type = 2;
     }
     return 1;
@@ -62,12 +64,11 @@ int
 readValuesInNodes (char *bufstr,
         Real *valuesArray) {
 
-    /*char tempstr[100];*/
     char *tempstr;
-    strncpy(tempstr, bufstr + NASTRANPointNumberPosition, NASTRANFieldLength);
-    int i;
-    i = atoi(tempstr);
-    valuesArray[i] = atof(bufstr + NASTRANValuePosition);
+    int tempint, i;
+    Real tempValue;
+    sscanf(bufstr, "%8s %16d %16d %16f", &tempstr, &tempint, &i, &tempValue);
+    valuesArray[i-1] = tempValue;
     return 1;
 }
 
@@ -76,9 +77,9 @@ readValuesInNodes (char *bufstr,
 int
 readNASTRANData	(char *ifile_name,
         TNode2d *nodes,
-        /*int nodesNum,*/
+        int *nodesNum,
         TCell2d *cells,
-        /*int cellsNum,*/
+        int *cellsNum,
         Real *ux,
         Real *uy,
         Real *duxdx,
@@ -89,28 +90,26 @@ readNASTRANData	(char *ifile_name,
     FILE *ifile;
 
     ifile = fopen(ifile_name, "r");
-    if (ifile = NULL) {
+    if (ifile == NULL) {
         printf("Error while reading input file %s", ifile_name);
         return 0;
     }
 
     // Count number of nodes and elements.
-    int nodesNum = 0;
-    int cellsNum = 0;
     int marker;
     char *bufstr;
     while ( !feof(ifile) ) {
         fgets(bufstr, LINE_MAX, ifile);
-        if (bufstr[0] = '$') {
+        if (bufstr[0] == '$') {
             marker = setMarker(bufstr);
             continue;
         } 
-        if (bufstr[0] = 'E') {
+        if (bufstr[0] == 'E') {
             if (strstr(bufstr, "ENDDATA") != NULL) {return 1;}
         }
         switch (marker) {
             case 1:
-                if (bufstr[0] = 'G') { nodesNum++; }
+                if (bufstr[0] == 'G') { nodesNum++; }
                 break; 
             case 2:
                 cellsNum++;
@@ -137,27 +136,27 @@ readNASTRANData	(char *ifile_name,
         exit (EXIT_FAILURE);
     }
     uy = (Real *)malloc ( sizeof(Real) * nodesNum );
-    if ( ux==NULL ) {
+    if ( uy==NULL ) {
         fprintf ( stderr, "\ndynamic memory allocation failed\n" );
         exit (EXIT_FAILURE);
     }
     duxdx = (Real *)malloc ( sizeof(Real) * nodesNum );
-    if ( ux==NULL ) {
+    if ( duxdx==NULL ) {
         fprintf ( stderr, "\ndynamic memory allocation failed\n" );
         exit (EXIT_FAILURE);
     }
     duxdy = (Real *)malloc ( sizeof(Real) * nodesNum );
-    if ( ux==NULL ) {
+    if ( duxdy==NULL ) {
         fprintf ( stderr, "\ndynamic memory allocation failed\n" );
         exit (EXIT_FAILURE);
     }
     duydx = (Real *)malloc ( sizeof(Real) * nodesNum );
-    if ( ux==NULL ) {
+    if ( duydx==NULL ) {
         fprintf ( stderr, "\ndynamic memory allocation failed\n" );
         exit (EXIT_FAILURE);
     }
     duydy = (Real *)malloc ( sizeof(Real) * nodesNum );
-    if ( ux==NULL ) {
+    if ( duydy==NULL ) {
         fprintf ( stderr, "\ndynamic memory allocation failed\n" );
         exit (EXIT_FAILURE);
     }
@@ -167,12 +166,12 @@ readNASTRANData	(char *ifile_name,
     ifile = fopen(ifile_name, "r");
     while ( !feof(ifile) ) {
         fgets(bufstr, LINE_MAX, ifile);
-        if (bufstr[0] = '$') {
+        if (bufstr[0] == '$') {
             marker = setMarker(bufstr);
             i = 0;
             continue;
         } 
-        if (bufstr[0] = 'E') {
+        if (bufstr[0] == 'E') {
             if (strstr(bufstr, "ENDDATA") != NULL) {return 1;}
         }
         switch (marker) {
@@ -187,27 +186,21 @@ readNASTRANData	(char *ifile_name,
                 break; 
             case 3:	
                 readValuesInNodes(bufstr, ux);
-                i++;
                 break; 
             case 4:
                 readValuesInNodes(bufstr, uy);
-                i++;
                 break; 
             case 5:
                 readValuesInNodes(bufstr, duxdx);
-                i++;
                 break; 
             case 6:
                 readValuesInNodes(bufstr, duydx);
-                i++;
                 break; 
             case 7:
                 readValuesInNodes(bufstr, duxdy);
-                i++;
                 break; 
             case 8:
                 readValuesInNodes(bufstr, duydy);
-                i++;
                 break; 
             default: break;
         }

@@ -20,3 +20,5 @@ Integer NNeighbours;
 Integer ** Neighbours;
 Real * ux,uy,duxdx,duydx,duxdy,duydy;
 Integer CurrentCell;
+
+int freeMem();
