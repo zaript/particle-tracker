@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 typedef double Real;
@@ -18,7 +20,9 @@ TNode2d * Nodes;
 TCell2d * Cells;
 Integer NNeighbours;
 Integer ** Neighbours;
-Real * ux,uy,duxdx,duydx,duxdy,duydy;
+
+Real *ux, *uy, *duxdx, *duydx, *duxdy, *duydy;
+
 Integer CurrentCell;
 
 int freeMem();

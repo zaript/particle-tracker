@@ -16,11 +16,13 @@
  * =====================================================================================
  */
 
+#include    "global.h"
+
 int
 freeMem() {
     free(Nodes);
     free(Cells);
-    free(Neighbours);
+    /*free(Neighbours);*/
     free(ux);
     free(uy);
     free(duxdx);
