@@ -57,11 +57,16 @@ readValuesInNodes (char *bufstr,
         Real *valuesArray) {
 
     /*TODO: удалить этот грязный хак.*/
-    int i, ii;
-    Real tempValue;
-    ii = sscanf(bufstr, "%*s %*d%4d%16lg", &i, &tempValue);
-    printf(" ----\n %d tokens %d %.15f\n\n", ii, i, tempValue);
-    valuesArray[i-1] = tempValue;
+    /*int i, ii;*/
+    /*Real tempValue;*/
+    /*ii = sscanf(bufstr, "%*s %*d%4d%16lg", &i, &tempValue);*/
+    /*printf(" ----\n %d tokens %d %.15f\n\n", ii, i, tempValue);*/
+    /*valuesArray[i-1] = tempValue;*/
+    char tempstr[LINE_MAX];
+    strncpy(tempstr, &bufstr[NASTRANPointNumberPosition], NASTRANFieldLength);
+    int i = atoi(tempstr) - 1;
+    valuesArray[i] = atof(&bufstr[NASTRANValuePosition]);
+    printf(" ----\n%d %.15f\n\n", i, valuesArray[i]);
     return 1;
 }
 
