@@ -1,5 +1,4 @@
-#include    "global.h"
+//#include    "global.h"
 
-int readNASTRANData	( char*, TNode2d*, int*, TCell2d*, int*, Real*, Real*, Real*, Real*, Real*, Real*);
-int readNASTRANData_t	( char*, TNode2d*, int*, TCell2d*, int*, Real*, Real*, Real*, Real*, Real*, Real*);
+int readNASTRANData	( char* );
 
